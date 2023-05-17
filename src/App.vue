@@ -5,10 +5,12 @@
   </div>
   <div class="new_item" v-if="new_item_box">
       <button class="close_button" @click="close_box()">X</button>
-      <center>
-        <input class="input_field" type="text" placeholder="nosaukums"><br>
-        <textarea placeholder="apraksts"></textarea><br>
-        <button type="submit">iesniegt</button>
+      <center style="margin-top: 10%;">
+        <input type="text" id="name" class="input_field"  placeholder="nosaukums"><br>
+        <textarea placeholder="apraksts" id="description"></textarea><br>
+        <span>Gala datums</span><br>
+        <input type="datetime-local" id="deadline" class="input_field">
+        <button type="submit" @click="new_item_submit()">iesniegt</button>
       </center>
   </div>
 </template>
@@ -24,12 +26,43 @@ export default {
     return {
       itemsData: [],
       new_item_box : false,
+      itemName : "",
+      itemDescription : "",
+      itemDeadline: "",
     };
   },
   methods:{
     new_item(){
       this.new_item_box = true;
       document.getElementById("site").classList.add("blur");
+    },
+    async new_item_submit(){
+      this.itemName = document.getElementById("name").value;
+      this.itemDescription = document.getElementById("description").value;
+      this.itemDeadline = document.getElementById("deadline").value;
+      try {
+        const item = {
+          name: this.itemName,
+          deadline: this.itemDeadline,
+        };
+        if (this.itemDescription) {
+            item.description = this.itemDescription;
+        }
+        const response = await fetch("http://127.0.0.1:8000/api/item/store", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ item })
+        });
+        if (response.ok) {
+          location.reload();
+        } else {
+          console.error('Error deleting item:', response.status);
+        }
+      } catch (error) {
+        console.error('Error deleting item:', error);
+      }
     },
     close_box(){
       this.new_item_box = false;

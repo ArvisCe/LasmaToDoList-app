@@ -2,16 +2,14 @@
     <div>
       <ul>
         <li v-for="item in filteredItems" :key="item.id">
-          <form method="PUT" :action="`http://127.0.0.1:8000/api/item/${item.id}`">
             <h1>
               {{ item.name }}
               <input type="checkbox" v-model="toggle" true-value="1" false-value="false" />
             </h1>
-  
+            <h3>{{ item.description }}</h3>
             <span v-if="item.description">{{ item.description }}</span>
             <br>
-            <input type="submit" class="button update" value="update">
-          </form>
+            <input type="submit" class="button update" value="update" @click="updateItem(item.id)">
             <button type="submit" class="button delete" @click="deleteItem(item.id)">Delete</button>test
         </li>
       </ul>
@@ -47,6 +45,13 @@
           location.reload();
         } catch (error) {
           console.error('Error deleting item:', error);
+        }
+      },
+      async updateItem(itemId) {
+        try{
+          await fetch(`http://127.0.0.1:8000/api/item/${itemId}`, { method: 'PUT' });
+        } catch (error) {
+          console.error('could not update item:', error);
         }
       }
     },
