@@ -4,13 +4,15 @@
         <li v-for="item in filteredItems" :key="item.id">
             <h1>
               {{ item.name }}
-              <input type="checkbox" v-model="toggle" true-value="1" false-value="false" />
+              <input type="checkbox" v-model="toggle" true-value="1" false-value="false" id="isCompleted" @click="updateItem(item.id)"/>
             </h1>
             <h3>{{ item.description }}</h3>
+            <h6>Izpildīt līdz {{ item.deadline }}</h6>
+            <h6>izveides laiks {{ item.created_at }}</h6>
+            <h5>{{  item }}</h5>
             <span v-if="item.description">{{ item.description }}</span>
             <br>
-            <input type="submit" class="button update" value="update" @click="updateItem(item.id)">
-            <button type="submit" class="button delete" @click="deleteItem(item.id)">Delete</button>test
+            <button type="submit" class="button delete" @click="deleteItem(item.id)">Delete</button>
         </li>
       </ul>
     </div>
@@ -41,21 +43,41 @@
     methods: {
       async deleteItem(itemId) {
         try {
-          await fetch(`http://127.0.0.1:8000/api/item/${itemId}`, { method: 'DELETE' });
+              await fetch(`http://127.0.0.1:8000/api/item/${itemId}`, { method: 'DELETE' });
+              location.reload();
+            } catch (error) {
+              console.error('Error deleting item:', error);
+            }
+          },
+          async updateItem(itemId) {
+            console.log("logged");
+            try {
+        const item = {
+          completed: document.getElementById("isCompleted").value,
+        };
+        
+        if (this.itemDescription) {
+          item.description = this.itemDescription;
+        }
+
+        const response = await fetch(`http://127.0.0.1:8000/api/item/${itemId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ item })
+        });
+
+        if (response.ok) {
           location.reload();
-        } catch (error) {
-          console.error('Error deleting item:', error);
+        } else {
+          console.error('Error adding item:', response.status);
         }
-      },
-      async updateItem(itemId) {
-        try{
-          await fetch(`http://127.0.0.1:8000/api/item/${itemId}`, { method: 'PUT' });
-        } catch (error) {
-          console.error('could not update item:', error);
-        }
+      } catch (error) {
+        console.error('Error adding item:', error);
       }
-    },
-    
+      }
+       }, 
     computed: {
       filteredItems() {
         const currentDate = new Date();
