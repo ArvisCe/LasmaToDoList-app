@@ -2,17 +2,16 @@
     <div>
       <ul>
         <li v-for="item in filteredItems" :key="item.id">
-            <h1>
-              {{ item.name }}
-              <input type="checkbox" v-model="toggle" true-value="1" false-value="false" id="isCompleted" @click="updateItem(item.id)"/>
-            </h1>
-            <h3>{{ item.description }}</h3>
-            <h6>Izpildīt līdz {{ item.deadline }}</h6>
-            <h6>izveides laiks {{ item.created_at }}</h6>
-            <h5>{{  item }}</h5>
-            <span v-if="item.description">{{ item.description }}</span>
-            <br>
-            <button type="submit" class="button delete" @click="deleteItem(item.id)">Delete</button>
+            <div class="card">
+              <h3>{{ item.name }}</h3>
+              <p v-if="description">{{ item.description }}</p>
+              <p>Izpildes laiks: {{ item.deadline }}</p>
+              <label>
+                Izdarīts:
+                <input type="checkbox" v-model="toggle" true-value="1" false-value="false" id="isCompleted" @click="updateItem(item.id)"/>
+              </label><br>
+              <button @click="deleteItem(item.id)">Dzēst</button>
+            </div>
         </li>
       </ul>
     </div>
@@ -90,9 +89,22 @@
   };
   </script>
   
-  <style scoped>
+<style scoped>
+  .card {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 50%;
+    border-radius: 5px;
+  }
+  
+  button {
+    margin-top: 10px;
+  }
   li {
     list-style: none;
   }
-  </style>
+</style>
+  
   

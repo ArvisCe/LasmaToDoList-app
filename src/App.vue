@@ -1,11 +1,14 @@
 <template>
   <div id="site">
     <input type="button" value="+" @click="new_item()">
-    <ItemsList :items="itemsData" />
+    <center>
+      <ItemsList :items="itemsData" />
+    </center>
   </div>
   <div class="new_item" v-if="new_item_box">
       <button class="close_button" @click="close_box()">X</button>
-      <center style="margin-top: 10%;">
+      <center style="margin-top: 2%;">
+        <h2>Pievienot uzdevumu</h2>
         <input type="text" id="name" class="input_field"  placeholder="nosaukums"><br>
         <textarea placeholder="apraksts" id="description"></textarea><br>
         <span>Gala datums un laiks</span><br>
